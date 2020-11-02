@@ -6,6 +6,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +26,20 @@ public class EventController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private EventValidator eventValidator;
+
+    public EventController(EventValidator eventValidator) {
+        this.eventValidator = eventValidator;
+    }
+
     @PostMapping
     public ResponseEntity createdEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        eventValidator.validate(eventDto, errors);
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
