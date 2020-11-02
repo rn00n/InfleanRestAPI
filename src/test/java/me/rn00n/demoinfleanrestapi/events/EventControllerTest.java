@@ -27,6 +27,7 @@ class EventControllerTest {
     @Autowired ObjectMapper objectMapper;
 
     @Test
+    @DisplayName("이벤트 등록 - 정상")
     public void createEvent() throws Exception {
         EventDto event = EventDto.builder()
                 .name("Spring")
@@ -56,6 +57,7 @@ class EventControllerTest {
     }
 
     @Test
+    @DisplayName("이벤트 등록 - 실패 : 입력받을 수 없는 값")
     public void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
                 .id(100)
@@ -83,7 +85,7 @@ class EventControllerTest {
     }
 
     @Test
-    @DisplayName("빈 입력값")
+    @DisplayName("이벤트 등록 - 실패 : 빈 입력값")
     public void createEvent_Bad_Request_Empty_Input() throws Exception {
         EventDto eventDto = EventDto.builder().build();
 
@@ -94,7 +96,7 @@ class EventControllerTest {
     }
 
     @Test
-    @DisplayName("이상한 입력값")
+    @DisplayName("이벤트 등록 - 실패 : 잘못된 입력값")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception {
         EventDto eventDto = EventDto.builder()
                 .name("Spring")
