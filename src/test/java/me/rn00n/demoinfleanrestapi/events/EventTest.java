@@ -26,4 +26,59 @@ class EventTest {
         assertEquals(event.getName(), name);
         assertEquals(event.getDescription(), description);
     }
+
+    @Test
+    public void testFree() {
+        Event event = null;
+        // Given
+        event = Event.builder()
+                .basePrice(0)
+                .maxPrice(0)
+                .build();
+        // When
+        event.update();
+        // Then
+        assertTrue(event.isFree());
+
+        // Given
+        event = Event.builder()
+                .basePrice(100)
+                .maxPrice(0)
+                .build();
+        // When
+        event.update();
+        // Then
+        assertFalse(event.isFree());
+
+        // Given
+        event = Event.builder()
+                .basePrice(0)
+                .maxPrice(100)
+                .build();
+        // When
+        event.update();
+        // Then
+        assertFalse(event.isFree());
+    }
+
+    @Test
+    public void testOffline() {
+        Event event = null;
+        // Given
+        event = Event.builder()
+                .location("강남역 네이버 D2 스타텁 팩토리")
+                .build();
+        // When
+        event.update();
+        // Then
+        assertTrue(event.isOffline());
+
+        // Given
+        event = Event.builder()
+                .build();
+        // When
+        event.update();
+        // Then
+        assertFalse(event.isOffline());
+    }
 }
