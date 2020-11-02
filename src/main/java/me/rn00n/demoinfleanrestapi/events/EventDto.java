@@ -1,18 +1,15 @@
 package me.rn00n.demoinfleanrestapi.events;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
-
-@Getter @Setter @EqualsAndHashCode(of = "id")
+@Data
 @Builder @NoArgsConstructor @AllArgsConstructor
-public class Event {
-
-    @Id @GeneratedValue
-    private Integer id;
+public class EventDto {
     private String name;
     private String description;
     private LocalDateTime beginEnrollmentDateTime;
@@ -23,9 +20,4 @@ public class Event {
     private int basePrice; // (optional)
     private int maxPrice; // (optional)
     private int limitOfEnrollment; // (optional)
-    private boolean offline;
-    private boolean free;
-    @Enumerated(EnumType.STRING)
-    private EventStatus eventStatus = EventStatus.DRAFT;
-
 }

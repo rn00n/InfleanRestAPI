@@ -1,5 +1,6 @@
 package me.rn00n.demoinfleanrestapi.events;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,12 @@ public class EventController {
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @PostMapping
-    public ResponseEntity createdEvent(@RequestBody Event event) {
+    public ResponseEntity createdEvent(@RequestBody EventDto eventDto) {
+        Event event = modelMapper.map(eventDto, Event.class);
         event = eventRepository.save(event);
         URI createdUri = linkTo(EventController.class).slash(event.getId()).toUri();
         return ResponseEntity.created(createdUri).body(event);
