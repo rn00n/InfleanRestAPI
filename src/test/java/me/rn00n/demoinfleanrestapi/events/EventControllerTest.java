@@ -29,6 +29,7 @@ class EventControllerTest {
     @Test
     @DisplayName("이벤트 등록 - 정상")
     public void createEvent() throws Exception {
+        String str = "강남역 스타텁 퍀토리";
         EventDto event = EventDto.builder()
                 .name("Spring")
                 .description("REST API Development with Spring")
@@ -38,7 +39,7 @@ class EventControllerTest {
                 .endEventDateTime(LocalDateTime.of(2020, 11, 11, 0, 0))
                 .basePrice(100)
                 .maxPrice(200)
-                .location("강남역 D2 스타텁 팩토리")
+                .location(str)
                 .build();
 
         mockMvc.perform(post("/api/events/")
@@ -53,6 +54,10 @@ class EventControllerTest {
                 .andExpect(jsonPath("free").value(false))
                 .andExpect(jsonPath("offline").value(true))
                 .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
+                .andExpect(jsonPath("location").value(str))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.query-events").exists())
+                .andExpect(jsonPath("_links.update-event").exists())
         ;
     }
 
