@@ -226,7 +226,33 @@ class EventControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_embedded.eventList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-//                .andDo(document("query-events"))
+                .andDo(document("query-events"))
+        ;
+    }
+
+    @Test
+    @DisplayName("30개의 이벤트 10개씩 두번째 페이지 조회하기 (인증정보 있음)")
+    public void queryEventsWithAuthentication() throws Exception {
+        // Given
+        IntStream.range(0,30).forEach(i -> {
+            generateEvent(i);
+        });
+
+        // When
+        mockMvc.perform(get("/api/events")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .param("page", "1")
+                .param("size", "10")
+                .param("sort", "name,DESC")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists())
+                .andExpect(jsonPath("_embedded.eventList[0]._links.self").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andExpect(jsonPath("_links.create-event").exists())
+                .andDo(document("query-events"))
         ;
     }
 
