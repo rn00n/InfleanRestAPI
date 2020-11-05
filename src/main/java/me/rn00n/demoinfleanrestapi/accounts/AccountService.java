@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,6 +18,7 @@ public class AccountService implements UserDetailsService {
 
     @Autowired
     private AccountRepository accountRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = accountRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));

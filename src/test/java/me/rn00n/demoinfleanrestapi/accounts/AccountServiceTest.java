@@ -1,13 +1,16 @@
 package me.rn00n.demoinfleanrestapi.accounts;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,5 +42,17 @@ class AccountServiceTest {
 
         // Then
         assertEquals(userDetails.getPassword(), password);
+    }
+
+    @Test
+    public void findByUsernameFile() {
+        String username = "testname";
+
+        try {
+            accountService.loadUserByUsername(username);
+            fail("supposed to be failed");
+        } catch (UsernameNotFoundException e) {
+            Matchers.containsString(username);
+        }
     }
 }
