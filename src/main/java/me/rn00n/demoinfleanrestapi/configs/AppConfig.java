@@ -4,6 +4,7 @@ import me.rn00n.demoinfleanrestapi.accounts.Account;
 import me.rn00n.demoinfleanrestapi.accounts.AccountRepository;
 import me.rn00n.demoinfleanrestapi.accounts.AccountRole;
 import me.rn00n.demoinfleanrestapi.accounts.AccountService;
+import me.rn00n.demoinfleanrestapi.commons.AppProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -36,15 +37,35 @@ public class AppConfig {
             AccountService accountService;
             @Autowired
             AccountRepository accountRepository;
+            @Autowired
+            AppProperties appProperties;
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                String username = "rn00n@naver.com";
-                Optional<Account> optionalAccount = accountRepository.findByEmail(username);
+                String username;
+                String password;
+                Optional<Account> optionalAccount;
+
+                username = appProperties.getAdminUsername();
+                password = appProperties.getAdminPassword();
+                optionalAccount = accountRepository.findByEmail(username);
                 if (optionalAccount.isEmpty()) {
                     Account account = Account.builder()
                             .email(username)
-                            .password("1234")
+                            .password(password)
                             .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
+                            .build();
+
+                    accountService.saveAccount(account);
+                }
+
+                username = appProperties.getUserUsername();
+                password = appProperties.getUserPassword();
+                optionalAccount = accountRepository.findByEmail(username);
+                if (optionalAccount.isEmpty()) {
+                    Account account = Account.builder()
+                            .email(username)
+                            .password(password)
+                            .roles(Set.of(AccountRole.USER))
                             .build();
 
                     accountService.saveAccount(account);

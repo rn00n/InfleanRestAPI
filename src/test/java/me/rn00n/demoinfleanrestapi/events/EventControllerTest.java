@@ -6,6 +6,7 @@ import me.rn00n.demoinfleanrestapi.accounts.AccountRepository;
 import me.rn00n.demoinfleanrestapi.accounts.AccountRole;
 import me.rn00n.demoinfleanrestapi.accounts.AccountService;
 import me.rn00n.demoinfleanrestapi.common.BaseControllerTest;
+import me.rn00n.demoinfleanrestapi.commons.AppProperties;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +42,7 @@ class EventControllerTest extends BaseControllerTest {
 
     @Autowired AccountRepository accountRepository;
 
+    @Autowired AppProperties appProperties;
     @BeforeEach
     public void setUp() {
         accountRepository.deleteAll();
@@ -131,11 +133,6 @@ class EventControllerTest extends BaseControllerTest {
                 ))
         ;
     }
-
-    private String getBearerToken() throws Exception {
-        return "Bearer " + getAccessToken();
-    }
-
 
     @Test
     @DisplayName("이벤트 등록 - 실패 : 입력받을 수 없는 값")
@@ -362,10 +359,14 @@ class EventControllerTest extends BaseControllerTest {
         ;
     }
 
+    private String getBearerToken() throws Exception {
+        return "Bearer " + getAccessToken();
+    }
+
     private String getAccessToken() throws Exception {
         // Given
-        String username = "rn00n1@naver.com";
-        String password = "1234";
+        String username = appProperties.getUserUsername();
+        String password = appProperties.getUserPassword();
         Account account = Account.builder()
                 .email(username)
                 .password(password)
@@ -374,8 +375,8 @@ class EventControllerTest extends BaseControllerTest {
 
         accountService.saveAccount(account);
 
-        String clientId = "myApp";
-        String clientSecret = "pass";
+        String clientId = appProperties.getClientId();
+        String clientSecret = appProperties.getClientSecret();
 
         ResultActions perform = mockMvc.perform(
                 post("/oauth/token")
