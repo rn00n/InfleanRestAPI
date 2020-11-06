@@ -1,10 +1,12 @@
 package me.rn00n.demoinfleanrestapi.configs;
 
 import me.rn00n.demoinfleanrestapi.accounts.Account;
+import me.rn00n.demoinfleanrestapi.accounts.AccountRepository;
 import me.rn00n.demoinfleanrestapi.accounts.AccountRole;
 import me.rn00n.demoinfleanrestapi.accounts.AccountService;
 import me.rn00n.demoinfleanrestapi.common.BaseControllerTest;
 import me.rn00n.demoinfleanrestapi.commons.AppProperties;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,15 @@ class AuthServerConfigTest extends BaseControllerTest {
     AccountService accountService;
 
     @Autowired
+    AccountRepository accountRepository;
+
+    @Autowired
     AppProperties appProperties;
+
+    @BeforeEach
+    public void setUp() {
+        accountRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("인증 토큰을 발급 받는 테스트")
@@ -33,6 +43,14 @@ class AuthServerConfigTest extends BaseControllerTest {
         // Given
         String username = appProperties.getUserUsername();
         String password = appProperties.getUserPassword();
+
+        Account account = Account.builder()
+                .email(username)
+                .password(password)
+                .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
+                .build();
+
+        accountService.saveAccount(account);
 
         mockMvc.perform(
                 post("/oauth/token")
